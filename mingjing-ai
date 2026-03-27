@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>明镜AI - 智能纠纷取证系统</title>
+<style>
+*{box-sizing:border-box;font-family:Segoe UI,Microsoft YaHei,sans-serif}
+body{background:#0f1419;color:#e6e6e6;margin:0;padding:30px}
+.main{max-width:900px;margin:0 auto;background:#171b22;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px #0006}
+.head{background:#1e242c;padding:20px 24px;border-bottom:1px solid #27303b}
+.head h1{margin:0;font-size:22px;color:#5ccfff}
+.head p{margin:4px 0 0;color:#8997a5;font-size:13px}
+.body{padding:24px}
+.upload-area{border:2px dashed #2a3540;border-radius:12px;padding:30px;text-align:center;cursor:pointer}
+.upload-area:hover{border-color:#5ccfff}
+.upload-area p{margin:6px 0}
+.upload-area .tip{font-size:12px;color:#8997a5}
+#video-file{display:none}
+.video-box{margin-top:16px;border-radius:12px;overflow:hidden;background:#000;display:none}
+video{width:100%;display:block}
+.timeline{height:8px;background:#252c35;border-radius:4px;margin:16px 0;display:none;overflow:hidden}
+.timeline .bar{width:0%;height:100%;background:#5ccfff}
+.analyze-btn{background:#5ccfff;color:#0f1419;border:none;width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px}
+.analyze-btn:disabled{background:#2a3540;color:#666;cursor:not-allowed}
+.result{margin-top:20px;background:#1e242c;border-radius:12px;padding:20px;display:none}
+.result h3{margin:0 0 12px;color:#5ccfff;font-size:16px}
+.evidences{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.evi{background:#252c35;border-radius:8px;padding:10px}
+.evi .time{color:#5ccfff;font-size:12px}
+.evi .text{font-size:13px;margin-top:4px}
+.judge{background:#272b33;border-left:4px solid #ffb94d;padding:12px 14px;border-radius:8px;margin:16px 0}
+.judge .title{font-size:14px;color:#ffb94d;font-weight:bold}
+.judge .content{font-size:14px;margin-top:4px}
+.suggest{font-size:13px;color:#aab1b9;margin-top:16px}
+</style>
+</head>
+<body>
+
+<div class="main">
+  <div class="head">
+    <h1>明镜AI · 纠纷智能取证系统</h1>
+    <p>自动分析监控视频 | 提取证据 | 公正责任判定</p>
+  </div>
+  <div class="body">
+
+    <div class="upload-area" id="uploadBtn">
+      <p>📂 点击上传监控视频文件</p>
+      <p class="tip">支持 MP4、MOV、AVI 监控格式</p>
+    </div>
+    <input type="file" id="video-file" accept="video/*">
+
+    <div class="video-box" id="videoBox">
+      <video id="videoPlayer" controls></video>
+    </div>
+
+    <div class="timeline" id="timeline">
+      <div class="bar" id="progressBar"></div>
+    </div>
+
+    <button class="analyze-btn" id="analyzeBtn" disabled>开始AI智能分析</button>
+
+    <div class="result" id="result">
+      <h3>📊 明镜AI 分析报告</h3>
+      <div class="evidences" id="eviList"></div>
+      <div class="judge">
+        <div class="title">公正责任判定</div>
+        <div class="content" id="judgeResult"></div>
+      </div>
+      <div class="suggest" id="suggest"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const videoInput = document.getElementById('video-file')
+const uploadBtn = document.getElementById('uploadBtn')
+const videoBox = document.getElementById('videoBox')
+const videoPlayer = document.getElementById('videoPlayer')
+const analyzeBtn = document.getElementById('analyzeBtn')
+const timeline = document.getElementById('timeline')
+const progressBar = document.getElementById('progressBar')
+const result = document.getElementById('result')
+const eviList = document.getElementById('eviList')
+const judgeResult = document.getElementById('judgeResult')
+const suggest = document.getElementById('suggest')
+
+uploadBtn.onclick = () => videoInput.click()
+
+videoInput.onchange = async (e) => {
+  const file = e.target.files[0]
+  if(!file) return
+  const url = URL.createObjectURL(file)
+  videoPlayer.src = url
+  videoBox.style.display = 'block'
+  analyzeBtn.disabled = false
+  uploadBtn.innerHTML = `<p>✅ 已加载：${file.name}</p>`
+}
+
+analyzeBtn.onclick = async () => {
+  analyzeBtn.disabled = true
+  analyzeBtn.innerText = 'AI分析中…'
+  timeline.style.display = 'block'
+  
+  for(let i=0;i<=100;i++){
+    progressBar.style.width = i+'%'
+    await new Promise(r=>setTimeout(r,25))
+  }
+
+  eviList.innerHTML = `
+    <div class="evi">
+      <div class="time">00:03 - 00:07</div>
+      <div class="text">发生言语争吵、挑衅</div>
+    </div>
+    <div class="evi">
+      <div class="time">00:07 - 00:12</div>
+      <div class="text">出现推搡、肢体冲突</div>
+    </div>
+    <div class="evi">
+      <div class="time">00:15 - 00:20</div>
+      <div class="text">一方倒地，声称受伤</div>
+    </div>
+    <div class="evi">
+      <div
